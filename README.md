@@ -1,7 +1,7 @@
 # GD United List
 
 Unified demonlist for Geometry Dash: Pointercrate, AREDL, and GDDL in one catalog, with
-durable player accounts, progress, completions, and a site-wide leaderboard.
+durable player accounts, progress, and completions.
 
 - Frontend: React + Vite + Radix UI
 - Production backend: Node.js + Express + SQLite (WAL)
@@ -192,7 +192,7 @@ npm run test:e2e:backend
 frontend/    React application
 backend/     Node.js/Express/SQLite API
 mock/        Development mock API
-scripts/     Seeding, refresh, validation, ranking utilities
+scripts/     Seeding, refresh, validation utilities
 data/        Canonical level data and generated mock database
 shared/      Shared TypeScript contract types
 docs/        PRD, architecture, design system, accessibility audit

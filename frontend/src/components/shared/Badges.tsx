@@ -1,4 +1,4 @@
-import type { LevelZone, PlayerKind, Status, VerificationStatus } from '@shared/types';
+import type { LevelZone, PlayerKind, VerificationStatus } from '@shared/types';
 
 export function ZoneBadge({ zone }: { zone: LevelZone }) {
   return <span className={`zone-pill ${zone === 'pointercrate' ? 'pc' : zone}`}>{zone.toUpperCase()}</span>;
@@ -15,6 +15,3 @@ export function SourceBadge({ source, verification, playerKind }: { source: stri
   );
 }
 
-export function StatusBadge({ status }: { status: Status }) {
-  return <span className="status-pill">{status}</span>;
-}

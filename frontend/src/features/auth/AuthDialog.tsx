@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { Dialog, Tabs } from '../../components/ui';
 import { useAuth, useToast } from '../../app/providers';
 import { api, ApiRequestError } from '../../lib/api/client';
@@ -15,6 +15,7 @@ export function AuthDialog({ open, onOpenChange, initialMode = 'signin' }: { ope
   const [error, setError] = useState<string | null>(null);
   const [errorField, setErrorField] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const submittingRef = useRef(false);
   const emailId = useId();
   const nameId = useId();
   const passwordId = useId();
@@ -53,6 +54,8 @@ export function AuthDialog({ open, onOpenChange, initialMode = 'signin' }: { ope
       setErrorField('password');
       return;
     }
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setSaving(true);
     try {
       const response = mode === 'register'
@@ -67,6 +70,7 @@ export function AuthDialog({ open, onOpenChange, initialMode = 'signin' }: { ope
       setError(err instanceof Error ? err.message : 'Unable to authenticate.');
       setErrorField(err instanceof ApiRequestError ? err.field ?? null : null);
     } finally {
+      submittingRef.current = false;
       setSaving(false);
     }
   };
@@ -85,7 +89,7 @@ export function AuthDialog({ open, onOpenChange, initialMode = 'signin' }: { ope
             <Dialog.Description id={descriptionId} className="section-copy">
               {mode === 'register'
                 ? 'Create an account to record progress and completions from any device. Your records live on the server, not in this browser.'
-                : 'Sign in to continue your records. Your profile, points, and completions are tied to your account.'}
+                : 'Sign in to continue your records. Your profile and completions are tied to your account.'}
             </Dialog.Description>
             <form id={formId} onSubmit={submit}>
               <Tabs.Root value={mode} onValueChange={(value) => { setMode(value as AuthMode); setError(null); setErrorField(null); }}>

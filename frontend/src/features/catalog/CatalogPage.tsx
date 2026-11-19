@@ -23,6 +23,7 @@ export function CatalogPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
   const [sourceStatus, setSourceStatus] = useState<SourceStatus[]>([]);
   const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
@@ -71,7 +72,7 @@ export function CatalogPage() {
         if (!cancelled) setLoading(false);
       });
     return () => { cancelled = true; };
-  }, [state.zone, state.division, state.q, state.difficulty.join(','), state.length.join(','), state.status, state.sort, state.page, session?.player.id]);
+  }, [state.zone, state.division, state.q, state.difficulty.join(','), state.length.join(','), state.status, state.sort, state.page, session?.player.id, refreshKey]);
 
   const loadStatus = () => {
     api.sourceStatus().then((payload) => setSourceStatus(payload.data)).catch(() => undefined);
@@ -184,7 +185,7 @@ export function CatalogPage() {
       ) : null}
 
       {loading ? <LoadingState label="FETCHING CATALOG" /> : null}
-      {!loading && error ? <EmptyState title="CATALOG ERROR" body={error} action={<button className="button" onClick={() => update({ page: state.page })}>RETRY</button>} /> : null}
+      {!loading && error ? <EmptyState title="CATALOG ERROR" body={error} action={<button className="button" onClick={() => setRefreshKey((key) => key + 1)}>RETRY</button>} /> : null}
       {!loading && !error && levels.length === 0 ? (
         <EmptyState title="NO LEVELS MATCH" body="Try a shorter name, a different difficulty, or clear the zone filter." action={<button className="button" onClick={() => setParams(new URLSearchParams())}>RESET FILTERS</button>} />
       ) : null}

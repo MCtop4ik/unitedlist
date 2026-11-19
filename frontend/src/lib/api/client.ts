@@ -4,7 +4,6 @@ import type {
   Completion,
   Level,
   LevelDetail,
-  LeaderboardEntry,
   Paginated,
   Player,
   Progress,
@@ -107,11 +106,6 @@ export const api = {
       headers: { Authorization: `Bearer ${token}` },
       body: JSON.stringify({ levelId }),
     });
-  },
-  leaderboard(page = 1, perPage = 50) {
-    return request<Paginated<LeaderboardEntry>>(
-      `/leaderboard?page=${page}&perPage=${perPage}`,
-    );
   },
   sourceStatus() {
     return request<{ data: SourceStatus[] }>('/source-status');

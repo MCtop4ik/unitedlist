@@ -76,7 +76,7 @@ export function LevelDialog({ levelId, onClose }: { levelId: number; onClose: ()
     setSaving(true);
     try {
       await api.saveProgress(session.token, detail.level.levelId, percent);
-      pushToast('PROGRESS SAVED', `${detail.level.name} / ${percent}% / no points`);
+      pushToast('PROGRESS SAVED', `${detail.level.name} / ${percent}%`);
       emitRecordsChanged();
       setProgressOpen(false);
       load();
@@ -146,7 +146,6 @@ export function LevelDialog({ levelId, onClose }: { levelId: number; onClose: ()
                         <div key={record.id} className="completion-row">
                           <span className="completion-name">
                             {record.playerName}
-                            {record.recordType === 'local' ? <span className="level-meta">{record.playerStatus}</span> : null}
                           </span>
                           {record.recordType === 'local'
                             ? <SourceBadge source="local" playerKind={record.playerKind} />
@@ -191,13 +190,13 @@ export function LevelDialog({ levelId, onClose }: { levelId: number; onClose: ()
                 <label htmlFor="progress-value">BEST PERCENT / 1–99</label>
                 <input id="progress-value" type="number" min={1} max={99} value={percent} onChange={(event) => setPercent(Math.max(1, Math.min(99, Number(event.target.value))))} />
               </div>
-              <Slider.Root value={[percent]} min={1} max={99} step={1} onValueChange={([value]) => setPercent(value ?? 1)} style={{ marginTop: 20 }}>
-                <Slider.Track style={{ position: 'relative', height: 10, border: 'var(--border)', background: 'var(--cream)' }}>
-                  <Slider.Range style={{ position: 'absolute', height: '100%', background: 'var(--acid)' }} />
+              <Slider.Root className="progress-slider" value={[percent]} min={1} max={99} step={1} onValueChange={([value]) => setPercent(value ?? 1)} style={{ width: '100%', marginTop: 20 }}>
+                <Slider.Track className="progress-slider-track">
+                  <Slider.Range className="progress-slider-range" />
+                  <Slider.Thumb className="progress-slider-thumb" aria-label="Progress percent" />
                 </Slider.Track>
-                <Slider.Thumb style={{ display: 'block', width: 20, height: 28, background: 'var(--ink)', border: 'var(--border)' }} aria-label="Progress percent" />
               </Slider.Root>
-              <p className="helper">LOWER VALUES NEVER REPLACE THE BEST / PROGRESS AWARDS NO POINTS</p>
+              <p className="helper">LOWER VALUES NEVER REPLACE THE BEST</p>
               <div className="actions">
                 <Dialog.Close className="button">CANCEL</Dialog.Close>
                 <button className="button primary" style={{ flex: 1 }} disabled={saving} onClick={saveProgress}>{saving ? 'SAVING…' : `SAVE ${percent}%`}</button>

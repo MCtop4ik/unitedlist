@@ -10,7 +10,7 @@ test('source failure keeps stale catalog and retry recovers', async ({ request, 
     await expect(page.getByRole('alert')).toContainText('SOURCE UNAVAILABLE');
     await expect(page.getByRole('button', { name: /GRIEF/i })).toBeVisible();
     await page.getByRole('button', { name: /GRIEF/i }).click();
-    await expect(page.getByText(/POINTERCRATE \/ verified/i).first()).toBeVisible();
+    await expect(page.getByRole('dialog')).toBeVisible();
     await page.keyboard.press('Escape');
 
     await request.post(`${API}/source-status/aredl/toggle`);

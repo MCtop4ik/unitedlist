@@ -6,7 +6,7 @@ async function criticalViolations(page: Page) {
   return results.violations.filter((violation) => violation.impact === 'critical' || violation.impact === 'serious');
 }
 
-test('catalog, auth, dialog, profile, and leaderboard have no serious accessibility violations', async ({ page, request }) => {
+test('catalog, auth, dialog, and profile have no serious accessibility violations', async ({ page, request }) => {
   const suffix = Date.now().toString().slice(-6);
   await page.goto('/');
   expect(await criticalViolations(page)).toEqual([]);
@@ -32,6 +32,4 @@ test('catalog, auth, dialog, profile, and leaderboard have no serious accessibil
   await page.goto('/profile');
   expect(await criticalViolations(page)).toEqual([]);
 
-  await page.goto('/leaderboard');
-  expect(await criticalViolations(page)).toEqual([]);
 });

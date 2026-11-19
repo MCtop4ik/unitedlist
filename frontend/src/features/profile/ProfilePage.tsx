@@ -4,7 +4,6 @@ import type { Completion, Level, Player, Progress } from '@shared/types';
 import { api } from '../../lib/api/client';
 import { useAuth } from '../../app/providers';
 import { onRecordsChanged } from '../../lib/events/records';
-import { StatusBadge } from '../../components/shared/Badges';
 import { EmptyState, LoadingState } from '../../components/shared/States';
 import { AuthDialog, type AuthMode } from '../auth/AuthDialog';
 
@@ -90,20 +89,18 @@ export function ProfilePage() {
           <p className="eyebrow">ACCOUNT PROFILE / SERVER-BACKED</p>
           <h1 className="profile-title">{player.displayName}</h1>
           <div className="badge-row">
-            <StatusBadge status={player.status} />
             <span className="helper">SINCE {new Date(player.createdAt).toLocaleDateString('en-GB')} / CROSS-DEVICE</span>
           </div>
         </div>
         <div className="stat-cards">
-          <div className="stat-card"><strong>{player.points.toLocaleString()}</strong><span>POINTS</span></div>
-          <div className="stat-card"><strong>#{player.leaderboardRank ?? '—'}</strong><span>SITE RANK</span></div>
           <div className="stat-card"><strong>{String(player.completionCount ?? 0).padStart(3, '0')}</strong><span>COMPLETIONS</span></div>
+          <div className="stat-card"><strong>{String(player.progressCount ?? 0).padStart(3, '0')}</strong><span>IN PROGRESS</span></div>
           <div className="stat-card"><strong>{player.bestCompletion ? `#${player.bestCompletion.globalRank}` : '—'}</strong><span>BEST CLEAR</span></div>
         </div>
       </section>
 
       <Tabs.Root defaultValue="overview">
-        <Tabs.List className="tabs simple" aria-label="Profile sections">
+        <Tabs.List className="tabs simple profile-tabs" aria-label="Profile sections">
           <Tabs.Trigger className="tab" value="overview">OVERVIEW</Tabs.Trigger>
           <Tabs.Trigger className="tab" value="completions">COMPLETIONS / {String(completions.length).padStart(3, '0')}</Tabs.Trigger>
           <Tabs.Trigger className="tab" value="progress">PROGRESS / {String(progress.length).padStart(3, '0')}</Tabs.Trigger>
@@ -157,7 +154,7 @@ function CompletionTable({ items }: { items: Completion[] }) {
           <span className="mono muted">{item.recordType === 'local' ? 'ACCOUNT' : item.source.toUpperCase()}</span>
           <span><strong>{item.recordType === 'local' ? (item.levelName ?? `LEVEL ${item.levelId}`) : item.playerName}</strong></span>
           <span className="mono">{item.completedAt ? new Date(item.completedAt).toLocaleDateString('en-GB') : '—'}</span>
-          <span className="mono" style={{ textAlign: 'right' }}>{item.recordType === 'local' ? `${item.playerPoints.toLocaleString()} PTS` : item.verificationStatus.toUpperCase()}</span>
+          <span className="mono" style={{ textAlign: 'right' }}>{item.recordType === 'local' ? '—' : item.verificationStatus.toUpperCase()}</span>
         </div>
       ))}
     </div>

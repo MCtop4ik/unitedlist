@@ -112,7 +112,7 @@ export class LiveCatalog {
     return request;
   }
 
-  list(query: any) {
+  list(query: any, filters?: { completed?: Set<number>; progress?: Set<number> }) {
     this.maybeRefresh();
     const page = Math.max(1, Number(query.page ?? 1));
     const perPage = Math.min(100, Math.max(1, Number(query.perPage ?? 50)));
@@ -128,6 +128,11 @@ export class LiveCatalog {
       if (difficulties.length && !difficulties.includes(level.difficulty)) return false;
       const lengths = String(query.length ?? '').split(',').filter(Boolean);
       if (lengths.length && !lengths.includes(level.length)) return false;
+      if (query.status === 'completed' && !filters?.completed?.has(level.levelId)) return false;
+      if (query.status === 'in-progress') {
+        if (!filters?.progress?.has(level.levelId)) return false;
+        if (filters?.completed?.has(level.levelId)) return false;
+      }
       return true;
     });
     const sort = String(query.sort ?? 'global');

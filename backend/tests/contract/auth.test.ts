@@ -16,7 +16,7 @@ describe('auth contract', () => {
     }).expect(201);
 
     expect(registered.body).toMatchObject({
-      data: { displayName: 'CONTRACT_PLAYER', points: 0, status: 'ROOKIE' },
+      data: { displayName: 'CONTRACT_PLAYER' },
       account: { email: 'contract@example.com' },
     });
     expect(registered.body.data.id).toMatch(/^acct_/);

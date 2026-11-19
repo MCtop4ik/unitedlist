@@ -5,10 +5,7 @@ import type { Player } from '@shared/types';
 const player: Player = {
   id: 'acct_test',
   displayName: 'TEST',
-  points: 0,
-  status: 'ROOKIE',
   createdAt: '2026-11-19T00:00:00.000Z',
-  leaderboardRank: null,
 };
 
 beforeEach(() => localStorage.clear());

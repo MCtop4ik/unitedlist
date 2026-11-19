@@ -14,7 +14,6 @@ test('catalog searches, switches zones, and opens a level', async ({ page }) => 
   await expect(page.getByRole('button', { name: /GRIEF/i })).toBeVisible();
   await page.getByRole('button', { name: /GRIEF/i }).click();
   await expect(page.getByRole('dialog')).toContainText('GRIEF');
-  await expect(page.getByText('PLAYER_ARCHIVE')).toBeVisible();
 });
 
 test('player can create an account from the profile page', async ({ page }) => {

@@ -25,8 +25,8 @@ test('frontend works against the real backend with account sessions', async ({ p
   await page.getByRole('button', { name: 'CONFIRM COMPLETION' }).click();
   await expect(page.getByRole('button', { name: 'ALREADY COMPLETED' })).toBeDisabled();
 
-  await page.goto('/leaderboard');
-  await expect(page.getByText(displayName)).toBeVisible();
+  await page.goto('/profile');
+  await expect(page.getByRole('heading', { name: displayName })).toBeVisible();
 
   const unauthorized = await request.post(`${API}/completions`, { data: { levelId: 149992717 } });
   expect(unauthorized.status()).toBe(401);

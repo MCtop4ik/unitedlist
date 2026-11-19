@@ -1,7 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { DB } from '../db/database.js';
 import type { Completion, Level, LocalCompletion } from '../../../shared/types.js';
-import { rankPlayers } from './ranking.js';
 
 export function saveProgress(db: DB, playerId: string, levelId: number, percent: number) {
   const existing = db.prepare('SELECT * FROM progress WHERE player_id=? AND level_id=?').get(playerId, levelId) as any;
@@ -28,7 +27,6 @@ export function saveCompletion(db: DB, playerId: string, levelId: number, videoU
 }
 
 export function localCompletionResponse(db: DB, row: any, levels: Map<number, Level>) {
-  const ranked = new Map(rankPlayers(db, levels).map((entry) => [entry.playerId, entry]));
   const player = db.prepare(`
     SELECT p.display_name,
       EXISTS(SELECT 1 FROM accounts a WHERE a.player_id = p.id) AS is_account
@@ -38,7 +36,6 @@ export function localCompletionResponse(db: DB, row: any, levels: Map<number, Le
   return {
     id: row.id, recordType: 'local' as const, playerId: row.player_id, playerName: player?.display_name ?? 'unknown',
     playerKind: (player?.is_account ? 'account' : 'legacy') as 'account' | 'legacy',
-    playerStatus: ranked.get(row.player_id)?.status ?? 'ROOKIE', playerPoints: ranked.get(row.player_id)?.points ?? 0,
     levelId: row.level_id, levelName: level?.name ?? null, percent: 100 as const, completedAt: row.completed_at, videoUrl: row.video_url,
   };
 }

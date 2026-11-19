@@ -31,9 +31,5 @@ describe('player kind DTOs', () => {
     expect(accountLevel.body.data.find((row: any) => row.playerId === accountId)).toMatchObject({ playerKind: 'account' });
     const legacyLevel = await request(app).get('/api/levels/2/completions').expect(200);
     expect(legacyLevel.body.data.find((row: any) => row.playerId === 'local_kind_legacy')).toMatchObject({ playerKind: 'legacy' });
-
-    const leaderboard = await request(app).get('/api/leaderboard?perPage=100').expect(200);
-    expect(leaderboard.body.data.find((row: any) => row.playerId === accountId)).toMatchObject({ playerKind: 'account' });
-    expect(leaderboard.body.data.find((row: any) => row.playerId === 'local_kind_legacy')).toMatchObject({ playerKind: 'legacy' });
   });
 });

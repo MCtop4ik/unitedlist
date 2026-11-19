@@ -17,7 +17,6 @@
     "seed:mock": "tsx scripts/seed-mock.ts",
     "refresh:levels": "tsx scripts/refresh-levels.ts",
     "refresh:completions": "tsx scripts/refresh-completions.ts",
-    "recalculate": "tsx scripts/recalculate-rankings.ts",
     "validate:levels": "tsx scripts/validate-levels.ts",
     "correct:records": "tsx scripts/correct-records.ts",
     "typecheck:node": "tsc -p tsconfig.node.json",

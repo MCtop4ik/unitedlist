@@ -10,7 +10,6 @@ import type {
   Level,
   LocalCompletion,
   Player,
-  Status,
 } from '../shared/types';
 
 type LocalCompletionRow = {
@@ -75,58 +74,14 @@ function persist() {
   writeFileSync(dbPath, JSON.stringify(db, null, 2));
 }
 
-function pointsFor(globalRank: number) {
-  return Math.max(1, Math.round(5000 / Math.pow(globalRank, 0.55)));
-}
-
-function statusFor(points: number): Status {
-  if (points >= 30000) return 'LEGEND';
-  if (points >= 15000) return 'EXTREME';
-  if (points >= 5000) return 'SKILLED';
-  if (points >= 1000) return 'PLAYER';
-  return 'ROOKIE';
-}
-
 const levelById = new Map<number, Level>();
 for (const level of db.levels) levelById.set(level.levelId, level);
 
-function localPoints(playerId: string) {
-  return db.completions
-    .filter((c) => c.playerId === playerId && levelById.has(c.levelId))
-    .reduce((sum, c) => sum + pointsFor(levelById.get(c.levelId)!.globalRank), 0);
-}
-
-function latestCompletion(playerId: string) {
-  return db.completions
-    .filter((c) => c.playerId === playerId)
-    .map((c) => c.completedAt)
-    .sort()
-    .at(-1);
-}
-
-function rankPlayers() {
-  return [...db.players]
-    .map((player) => {
-      const points = localPoints(player.id);
-      return {
-        player,
-        playerKind: (db.accounts.some((account) => account.playerId === player.id) ? 'account' : 'legacy') as 'account' | 'legacy',
-        points,
-        status: statusFor(points),
-        latest: latestCompletion(player.id) ?? '',
-      };
-    })
-    .sort((a, b) => {
-      if (b.points !== a.points) return b.points - a.points;
-      if (a.latest !== b.latest) return a.latest < b.latest ? -1 : 1;
-      return a.player.id.localeCompare(b.player.id);
-    })
-    .map((entry, index) => ({ ...entry, rank: index + 1 }));
+function playerKind(playerId: string) {
+  return (db.accounts.some((account) => account.playerId === playerId) ? 'account' : 'legacy') as 'account' | 'legacy';
 }
 
 function playerDto(player: PlayerRow): Player {
-  const points = localPoints(player.id);
-  const ranked = rankPlayers().find((entry) => entry.player.id === player.id);
   const completions = db.completions.filter((c) => c.playerId === player.id);
   const best = [...completions]
     .map((c) => levelById.get(c.levelId))
@@ -135,10 +90,7 @@ function playerDto(player: PlayerRow): Player {
   return {
     id: player.id,
     displayName: player.displayName,
-    points,
-    status: statusFor(points),
     createdAt: player.createdAt,
-    leaderboardRank: ranked?.rank ?? null,
     completionCount: completions.length,
     progressCount: db.progress.filter((p) => p.playerId === player.id).length,
     bestCompletion: best ?? null,
@@ -148,15 +100,12 @@ function playerDto(player: PlayerRow): Player {
 function localCompletionDto(row: LocalCompletionRow): LocalCompletion | null {
   const player = db.players.find((p) => p.id === row.playerId);
   if (!player) return null;
-  const dto = playerDto(player);
   return {
     id: row.id,
     recordType: 'local',
     playerId: row.playerId,
     playerName: player.displayName,
-    playerKind: (db.accounts.some((account) => account.playerId === row.playerId) ? 'account' : 'legacy') as 'account' | 'legacy',
-    playerStatus: dto.status,
-    playerPoints: dto.points,
+    playerKind: playerKind(row.playerId),
     levelId: row.levelId,
     levelName: levelById.get(row.levelId)?.name ?? null,
     percent: 100,
@@ -366,7 +315,7 @@ app.get('/api/levels', (req, res) => {
     if (lengths.length && !lengths.includes(level.length)) return false;
     if (status) {
       const completed = db.completions.some((c) => c.playerId === playerId && c.levelId === level.levelId);
-      const inProgress = db.progress.some((p) => p.playerId === playerId && p.levelId === level.levelId);
+      const inProgress = !completed && db.progress.some((p) => p.playerId === playerId && p.levelId === level.levelId);
       if (status === 'completed' && !completed) return false;
       if (status === 'in-progress' && !inProgress) return false;
     }
@@ -521,18 +470,6 @@ app.post('/api/completions', (req, res) => {
   res.status(201).json({ data: localCompletionDto(row) });
 });
 
-app.get('/api/leaderboard', (req, res) => {
-  const items = rankPlayers().map((entry) => ({
-    rank: entry.rank,
-    playerId: entry.player.id,
-    displayName: entry.player.displayName,
-    playerKind: entry.playerKind,
-    points: entry.points,
-    status: entry.status,
-    completionCount: db.completions.filter((c) => c.playerId === entry.player.id && levelById.has(c.levelId)).length,
-  }));
-  res.json(paginate(items, Number(req.query.page ?? 1), Math.min(100, Number(req.query.perPage ?? 50))));
-});
 
 app.get('/api/source-status', (_req, res) => {
   res.json({ data: db.sourceStatus });

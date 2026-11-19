@@ -28,8 +28,6 @@ test('long display names and 320px viewports do not overflow horizontally', asyn
   await expect(page.getByRole('heading', { name: LONG_NAME })).toBeVisible();
   await expectInViewport(page.getByRole('button', { name: /Account menu/i }), page);
 
-  await page.goto('/leaderboard');
-  await expectNoHorizontalScroll(page);
 
   const anonymous = await browser.newContext();
   const mobile = await anonymous.newPage();
@@ -43,4 +41,12 @@ test('long display names and 320px viewports do not overflow horizontally', asyn
   await expect(gddl).toBeVisible();
   await expectInViewport(gddl, mobile);
   await anonymous.close();
+});
+
+test('catalog has no horizontal overflow across the mobile width matrix', async ({ page }) => {
+  for (const viewport of [{ width: 320, height: 568 }, { width: 360, height: 640 }, { width: 375, height: 667 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/');
+    await expectNoHorizontalScroll(page);
+  }
 });

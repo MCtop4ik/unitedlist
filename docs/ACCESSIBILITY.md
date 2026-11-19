@@ -11,7 +11,6 @@ Automated audit covers:
 - auth gate and sign-in/create-account dialog
 - signed-out and signed-in profile
 - signed-in header account menu
-- leaderboard
 
 Tooling: `@axe-core/playwright` against the running app at `http://localhost:5173`.
 
@@ -42,9 +41,11 @@ After fixes: **0 critical and 0 serious violations** in the audited views.
   inline field errors, and a disabled submitting state.
 - The header account menu keeps its visible player text in the accessible name and exposes
   sign-out through the Radix dropdown menu.
-- Added responsive checks at 320×568, 360×640, 375×667, 390×844, and 1440×900, including
-  a 32-character unbroken display name. The layout no longer scrolls horizontally, and the
-  filter/auth actions remain reachable on short screens.
+- Added responsive checks at 320×568, 360×640, 375×667, 390×844, 844×390 landscape, and
+  1440×900, including a 32-character unbroken display name. Every primary flow (catalog,
+  filters, sort, level/progress dialogs, auth, profile) is checked for horizontal overflow
+  and reachable actions. The progress control is a full-width progress bar with an inset
+  thumb on mobile.
 
 ## Manual follow-up
 

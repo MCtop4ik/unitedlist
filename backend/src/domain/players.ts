@@ -1,7 +1,6 @@
 import { createHash } from 'node:crypto';
 import type { DB } from '../db/database.js';
 import type { Level, Player } from '../../../shared/types.js';
-import { rankPlayers } from './ranking.js';
 import { localCompletionResponse } from './records.js';
 
 export function hashToken(token: string) { return createHash('sha256').update(token).digest('hex'); }
@@ -9,12 +8,10 @@ export function hashToken(token: string) { return createHash('sha256').update(to
 export function getPlayer(db: DB, playerId: string, levels: Map<number, Level>): Player | null {
   const base = db.prepare('SELECT id, display_name, created_at FROM players WHERE id=?').get(playerId) as any;
   if (!base) return null;
-  const ranked = rankPlayers(db, levels).find((entry) => entry.playerId === playerId);
   const bestId = (db.prepare('SELECT level_id FROM completions WHERE player_id=?').all(playerId) as Array<{ level_id: number }>)
     .map((row) => levels.get(row.level_id)).filter((level): level is Level => Boolean(level)).sort((a, b) => a.globalRank - b.globalRank)[0];
   return {
-    id: base.id, displayName: base.display_name, points: ranked?.points ?? 0, status: ranked?.status ?? 'ROOKIE',
-    createdAt: base.created_at, leaderboardRank: ranked?.rank ?? null,
+    id: base.id, displayName: base.display_name, createdAt: base.created_at,
     completionCount: (db.prepare('SELECT COUNT(*) AS n FROM completions WHERE player_id=?').get(playerId) as any).n,
     progressCount: (db.prepare('SELECT COUNT(*) AS n FROM progress WHERE player_id=?').get(playerId) as any).n,
     bestCompletion: bestId ?? null,

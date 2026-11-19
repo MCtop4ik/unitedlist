@@ -7,7 +7,6 @@ export type Zone =
 
 export type PlayerKind = 'account' | 'legacy';
 export type LevelZone = 'pointercrate' | 'aredl' | 'gddl';
-export type Status = 'ROOKIE' | 'PLAYER' | 'SKILLED' | 'EXTREME' | 'LEGEND';
 export type Length = 'tiny' | 'short' | 'medium' | 'long' | 'xl';
 export type VerificationStatus = 'verified' | 'stat' | 'unknown';
 
@@ -32,8 +31,6 @@ export interface LocalCompletion {
   playerId: string;
   playerName: string;
   playerKind: PlayerKind;
-  playerStatus: Status;
-  playerPoints: number;
   levelId: number;
   levelName?: string | null;
   percent: 100;
@@ -58,10 +55,7 @@ export type Completion = LocalCompletion | ImportedCompletion;
 export interface Player {
   id: string;
   displayName: string;
-  points: number;
-  status: Status;
   createdAt: string;
-  leaderboardRank: number | null;
   completionCount?: number;
   progressCount?: number;
   bestCompletion?: Level | null;
@@ -87,15 +81,6 @@ export interface AuthMe {
   expiresAt: string;
 }
 
-export interface LeaderboardEntry {
-  rank: number;
-  playerId: string;
-  displayName: string;
-  playerKind: PlayerKind;
-  points: number;
-  status: Status;
-  completionCount: number;
-}
 
 export interface Paginated<T> {
   data: T[];

@@ -13,7 +13,6 @@ export function AppHeader() {
         </div>
         <nav className="nav" aria-label="Primary">
           <NavLink to="/" end>Catalog</NavLink>
-          <NavLink to="/leaderboard">Leaderboard</NavLink>
           <NavLink to="/profile">Profile</NavLink>
         </nav>
         {session ? (
@@ -36,7 +35,6 @@ export function AppHeader() {
           <DropdownMenu.Portal>
             <DropdownMenu.Content className="menu" align="end">
               <DropdownMenu.Item className="subtab menu-item" asChild><Link to="/">CATALOG</Link></DropdownMenu.Item>
-              <DropdownMenu.Item className="subtab menu-item" asChild><Link to="/leaderboard">LEADERBOARD</Link></DropdownMenu.Item>
               <DropdownMenu.Item className="subtab menu-item" asChild><Link to="/profile">PROFILE</Link></DropdownMenu.Item>
             </DropdownMenu.Content>
           </DropdownMenu.Portal>

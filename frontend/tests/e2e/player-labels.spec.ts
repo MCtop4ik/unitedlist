@@ -11,7 +11,7 @@ test('account and legacy completions are labeled distinctly', async ({ page, req
   const payload = await registered.json();
   await request.post(`${API}/completions`, {
     headers: { Authorization: `Bearer ${payload.token}` },
-    data: { levelId: 149992717 },
+    data: { levelId: 119544028 },
   });
 
   await page.goto('/');
@@ -21,12 +21,9 @@ test('account and legacy completions are labeled distinctly', async ({ page, req
     player: payload.data,
   });
   await page.reload();
-  await page.getByRole('button', { name: /GRIEF/i }).click();
+  await page.getByRole('button', { name: /Thinking Space II/i }).click();
   await expect(page.getByText('ACCOUNT', { exact: true }).first()).toBeVisible();
   await expect(page.getByText('LEGACY', { exact: true }).first()).toBeVisible();
   await page.keyboard.press('Escape');
 
-  await page.goto('/leaderboard');
-  await expect(page.getByText('ACCOUNT / POINTS FROM COMPLETIONS').first()).toBeVisible();
-  await expect(page.getByText('LEGACY PROFILE / POINTS FROM COMPLETIONS').first()).toBeVisible();
 });

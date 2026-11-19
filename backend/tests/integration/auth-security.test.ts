@@ -36,8 +36,6 @@ describe('auth security', () => {
 
     const profile = await request(app).get(`/api/players/${registered.body.data.id}`).expect(200);
     expect(JSON.stringify(profile.body)).not.toContain(account.email);
-    const leaderboard = await request(app).get('/api/leaderboard').expect(200);
-    expect(JSON.stringify(leaderboard.body)).not.toContain(account.email);
   });
 
   it('normalizes email and display-name uniqueness for registration', async () => {

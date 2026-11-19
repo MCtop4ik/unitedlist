@@ -11,7 +11,6 @@ import { authRouter } from './http/routes/auth.js';
 import { levelsRouter } from './http/routes/levels.js';
 import { playersRouter } from './http/routes/players.js';
 import { recordsRouter } from './http/routes/records.js';
-import { leaderboardRouter } from './http/routes/leaderboard.js';
 import { healthRouter } from './http/routes/health.js';
 import { sourceStatusRouter } from './http/routes/source-status.js';
 import { thumbnailsRouter } from './http/routes/thumbnails.js';
@@ -44,7 +43,6 @@ export function createApp(db: DB, config: Config, catalog: LiveCatalog) {
   app.use('/api/auth', authLimiter, authRouter(db, catalog));
   app.use('/api/players', playersRouter(db, catalog));
   app.use('/api', writeLimiter, recordsRouter(db, catalog));
-  app.use('/api/leaderboard', leaderboardRouter(db, catalog));
   app.use('/api/source-status', sourceStatusRouter(catalog));
   app.use('/api/thumbnails', thumbnailsRouter(db));
 

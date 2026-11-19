@@ -44,10 +44,9 @@ test('keyboard navigates zones, divisions, filters, and sort', async ({ page }) 
   await page.keyboard.press('Escape');
 });
 
-test('mobile menu reaches leaderboard and profile', async ({ page }) => {
+test('mobile menu reaches profile', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: /OPEN NAVIGATION/i }).click();
-  await expect(page.getByRole('menuitem', { name: 'LEADERBOARD' })).toBeVisible();
   await page.getByRole('menuitem', { name: 'PROFILE' }).click();
   await expect(page).toHaveURL(/profile/);
 });
