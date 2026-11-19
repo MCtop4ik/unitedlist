@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["levels"],
+  "properties": {
+    "levels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["levelId", "name", "author", "zone", "zoneRank", "globalRank", "difficulty", "length"],
+        "properties": {
+          "levelId": { "type": "integer" },
+          "globalRank": { "type": "integer", "minimum": 1 },
+          "zoneRank": { "type": "integer", "minimum": 1 },
+          "zone": { "enum": ["pointercrate", "aredl", "gddl"] }
+        }
+      }
+    }
+  }
+}

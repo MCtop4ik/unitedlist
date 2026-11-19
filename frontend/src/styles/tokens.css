@@ -1,0 +1,20 @@
+:root {
+  --cream: #f4f1ea;
+  --ink: #111111;
+  --acid: #d8ff3e;
+  --sans: "Helvetica Neue", Inter, Arial, sans-serif;
+  --serif: Georgia, serif;
+  --mono: "Courier New", "Courier Prime", monospace;
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 16px;
+  --s-sm: 16px;
+  --s-md: 32px;
+  --s-lg: 64px;
+  --border: 2px solid var(--ink);
+  color: var(--ink);
+  background: var(--cream);
+  font-family: var(--sans);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
